@@ -1,0 +1,195 @@
+/* NASAQ Studio — Burgundy & Beige
+   UXP-safe: flexbox, solid colors, borders, opacity. All motion is driven from main.js. */
+:root{
+  --burg-950:#2a0a12;
+  --burg-900:#3a0f1b;
+  --burg-800:#4e1424;
+  --burg-700:#6b1c31;
+  --burg-600:#852640;
+  --burg-500:#a33a55;
+  --beige-100:#f6efe2;
+  --beige-200:#eadfca;
+  --beige-300:#dac8a8;
+  --beige-400:#c3aa81;
+  --ink:#f6efe2;
+  --ink-dim:#cdbfae;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;min-width:0}
+body{background:#2a0a12;color:#f6efe2;font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;overflow:hidden}
+
+/* ---------- Header ---------- */
+header{height:76px;width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#3a0f1b;position:relative;z-index:5;border-bottom:1px solid #6b1c31}
+.mark{position:relative;width:46px;height:46px;flex:0 0 46px;display:flex;align-items:center;justify-content:center;background:#eadfca;color:#4e1424;font-size:26px;font-weight:900;border-radius:3px}
+.mark:after{content:"";position:absolute;left:4px;top:4px;right:-4px;bottom:-4px;border:1px solid #c3aa81;border-radius:3px;z-index:-1}
+.brand-copy{min-width:0;flex:1}
+h1{font-size:20px;margin:0;font-weight:800;letter-spacing:.3px;color:#f6efe2}
+.brand-copy p{margin:1px 0 0;color:#dac8a8;font-size:12px}
+.version{font-size:10px;font-weight:800;letter-spacing:1.2px;background:#eadfca;color:#4e1424;padding:4px 8px;border-radius:2px}
+#sweep{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:#eadfca;opacity:.95}
+
+/* ---------- Layout ---------- */
+main{position:absolute;top:76px;bottom:62px;left:0;right:0;overflow-y:auto;overflow-x:hidden;padding:18px 16px 14px;scrollbar-color:#852640 #2a0a12}
+.view{display:none;position:relative}
+.view.active{display:block}
+
+/* ---------- Home ---------- */
+.welcome{padding:10px 2px 22px}
+.eyebrow{display:inline-block;font-size:10px;font-weight:800;letter-spacing:1.8px;color:#c3aa81}
+.welcome h2{font-size:31px;line-height:1.35;margin:10px 0 12px;font-weight:850;color:#f6efe2}
+.welcome h2 span{display:block;color:#dac8a8}
+.welcome p,.page-heading p{font-size:13px;line-height:1.8;color:#cdbfae;margin:0;max-width:360px}
+.rise{position:relative}
+
+.tool-card{display:flex;align-items:stretch;gap:14px;text-align:left;width:100%;margin:0 0 14px;padding:16px 14px 16px 18px;background:#4e1424;border:1px solid #852640;border-radius:3px;color:#f6efe2;cursor:pointer;position:relative;overflow:hidden}
+.tool-card .bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:#eadfca}
+.tool-card .wash{position:absolute;left:0;top:0;bottom:0;width:0;background:#eadfca;opacity:0}
+.tool-card>*:not(.bar):not(.wash){position:relative}
+.tool-icon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;flex:0 0 48px;border-radius:3px;background:#eadfca;color:#4e1424;font-size:25px;font-weight:700}
+.tool-copy{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.tool-copy b{font-size:14px;color:#f6efe2}
+.tool-copy small{font-size:12px;line-height:1.7;color:#dacdbb}
+.tool-copy em{font-style:normal;font-size:11px;font-weight:700;color:#dac8a8;margin-top:2px}
+.tool-copy em span{padding-left:3px}
+.card-arrow{align-self:center;color:#eadfca;font-size:30px;position:relative}
+.tool-card:hover{background:#5b1829;border-color:#c3aa81}
+.tool-card:active{background:#6b1c31}
+
+.home-note{display:flex;align-items:center;gap:9px;margin:20px 3px 6px;color:#c3aa81;font-size:11px}
+.note-dot{width:8px;height:8px;border-radius:50%;background:#eadfca}
+
+/* ---------- Tool pages ---------- */
+.back-button{display:inline-block;width:auto;margin:0 0 16px;padding:8px 13px;background:#3a0f1b;border:1px solid #852640;color:#eadfca;border-radius:2px;font-size:12px;font-weight:700}
+.back-button:hover{background:#eadfca;color:#4e1424;border-color:#eadfca}
+.page-heading{margin:0 2px 18px}
+.page-heading h2{font-size:26px;line-height:1.3;margin:6px 0 9px;font-weight:850;color:#f6efe2}
+
+.card{background:#3a0f1b;border:1px solid #6b1c31;border-radius:3px;padding:16px;margin-bottom:16px}
+.section-title{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.section-title .number{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:2px;background:#eadfca;color:#4e1424;font-size:11px;font-weight:900}
+.section-title h3{font-size:14px;font-weight:800;color:#f6efe2;margin:0}
+.muted,.hint{font-size:12px;color:#cdbfae}
+.hint{border-left:3px solid #c3aa81;padding-left:10px;line-height:1.7;margin:10px 0 0}
+.field-section{margin-top:24px;padding-top:17px;border-top:1px solid #6b1c31}
+
+label{display:flex;justify-content:space-between;align-items:center;margin:15px 0 6px;font-size:13px;font-weight:700;color:#eadfca;line-height:1.5}
+label b{color:#f6efe2}
+input:not([type=range]),select,textarea{display:block;width:100%;background:#2a0a12;border:1px solid #852640;border-radius:2px;padding:11px 10px;color:#f6efe2;font:13px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,sans-serif;min-height:40px;outline:none}
+textarea{min-height:68px;resize:vertical}
+textarea::placeholder,input::placeholder{color:#a8928f;opacity:1}
+input:focus,select:focus,textarea:focus{border-color:#eadfca;background:#33101a}
+input[type=range]{width:100%}
+
+.identity-note{margin-top:12px;padding:12px;border:1px solid #c3aa81;border-left:4px solid #eadfca;border-radius:2px;background:#4e1424;color:#f1e6d3;font-size:12px;line-height:1.85}
+.format-chip{display:flex;flex-direction:column;gap:2px;margin-top:16px;padding:13px;border-radius:2px;border:1px solid #c3aa81;background:#eadfca}
+.format-chip span,.format-chip small{font-size:11px;color:#6b1c31}
+.format-chip strong{font-size:18px;color:#3a0f1b;letter-spacing:.4px}
+
+/* ---------- Buttons ---------- */
+button.primary,button.secondary{position:relative;overflow:hidden;display:block;width:100%;border-radius:2px;padding:12px 13px;font-weight:800;font-size:13px;min-height:44px;cursor:pointer;margin-top:16px}
+.primary{background:#eadfca;color:#3a0f1b;border:1px solid #f6efe2}
+.primary:hover{background:#f6efe2}
+.primary:disabled{opacity:.7}
+.primary .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#852640;opacity:0}
+.primary .label{position:relative}
+.secondary{background:transparent;color:#eadfca;border:1px solid #c3aa81}
+.secondary:hover{background:#4e1424;border-color:#eadfca}
+.output{min-height:220px;font-size:13px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px}
+.copy-button{margin-bottom:4px}
+button,select{cursor:pointer}
+button:focus-visible{outline:2px solid #eadfca;outline-offset:2px}
+
+/* ---------- Footer & status ---------- */
+footer{position:absolute;left:0;right:0;bottom:36px;height:26px;text-align:center;color:#a8928f;font-size:10px;letter-spacing:1.2px;padding-top:5px}
+footer span{color:#eadfca}
+#status{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:9px 14px;min-height:36px;border-top:1px solid #c3aa81;background:#eadfca;color:#3a0f1b;font-size:12px;font-weight:700;line-height:1.45}
+
+/* ---------- Intro curtain ---------- */
+#curtain{position:fixed;left:0;top:0;right:0;bottom:0;z-index:50;background:transparent}
+#curtain .half{position:absolute;left:0;right:0;background:#3a0f1b}
+#curtain .top{top:0;height:50%}
+#curtain .bottom{bottom:0;height:50%}
+#curtain .stage{position:absolute;left:0;right:0;top:50%;height:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#curtain .logo{width:84px;height:84px;display:flex;align-items:center;justify-content:center;background:#eadfca;color:#4e1424;font-size:50px;font-weight:900;border-radius:3px;opacity:0}
+#curtain .word{margin-top:16px;font-size:13px;font-weight:800;letter-spacing:6px;color:#eadfca;opacity:0}
+#curtain .rule{margin-top:14px;height:2px;width:0;background:#c3aa81}
+
+@media(min-width:440px){main{padding-left:20px;padding-right:20px}.welcome h2{font-size:34px}}
+
+@media(max-height:560px){footer{display:none}main{bottom:36px}}
+.tool-copy small,.page-heading p,.welcome p{max-width:100%}
+
+/* ---------- Social Icons tool ---------- */
+.social-list{margin-top:10px}
+.social-row{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 8px;padding:9px 12px;background:#2a0a12;border:1px solid #6b1c31;border-radius:2px;color:#cdbfae;cursor:pointer;text-align:left}
+.social-row .s-tile{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex:0 0 44px;background:#3a0f1b;border-radius:2px}
+.social-row .s-tile img{width:34px;height:34px}
+.social-row .s-name{flex:1;font-size:14px;font-weight:800}
+.social-row .s-check{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border:2px solid #c3aa81;border-radius:2px;background:transparent}
+.social-row .s-tick{font-size:15px;font-weight:900;color:#3a0f1b;opacity:0}
+.social-row.on{background:#4e1424;border-color:#eadfca;color:#f6efe2}
+.social-row.on .s-tile{background:#eadfca}
+.social-row.on .s-check{background:#eadfca;border-color:#eadfca}
+.social-row.on .s-tick{opacity:1}
+.social-row:hover{border-color:#c3aa81}
+
+/* ---------- Text Studio ---------- */
+.opt{margin:0 0 8px;border:1px solid #6b1c31;border-radius:2px;background:#2a0a12}
+.opt-head{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;background:transparent;border:none;color:#cdbfae;cursor:pointer;text-align:left}
+.opt-head .s-check{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border:2px solid #c3aa81;border-radius:2px;background:transparent}
+.opt-head .s-tick{font-size:15px;font-weight:900;color:#3a0f1b;opacity:0}
+.opt-head .s-name{flex:1;font-size:14px;font-weight:800}
+.opt-tag{font-size:10px;font-weight:800;letter-spacing:.6px;color:#a8928f}
+.opt-body{display:none;padding:0 12px 12px}
+.opt.on{background:#4e1424;border-color:#eadfca}
+.opt.on .opt-head{color:#f6efe2}
+.opt.on .s-check{background:#eadfca;border-color:#eadfca}
+.opt.on .s-tick{opacity:1}
+.opt.on .opt-tag{color:#eadfca}
+.opt.on .opt-body{display:block}
+.opt-head:hover{color:#f6efe2}
+.color-row{display:flex;align-items:center;gap:8px}
+.color-row input{flex:1}
+.swatch{width:40px;height:40px;flex:0 0 40px;border:1px solid #c3aa81;border-radius:2px;background:#ffffff}
+.style-list{margin-top:10px}
+.style-row{display:flex;align-items:stretch;gap:6px;margin:0 0 6px}
+.style-row .load{flex:1;text-align:left;padding:9px 12px;background:#2a0a12;border:1px solid #6b1c31;border-radius:2px;color:#f6efe2;font-weight:700;font-size:13px;cursor:pointer}
+.style-row .load:hover{border-color:#eadfca;background:#4e1424}
+.style-row .del{width:40px;background:transparent;border:1px solid #6b1c31;border-radius:2px;color:#c3aa81;font-size:16px;cursor:pointer}
+.style-row .del:hover{background:#eadfca;color:#3a0f1b}
+.style-empty{font-size:12px;color:#a8928f;padding:6px 2px}
+
+/* ---------- App shell: connection chip + pin ---------- */
+.ps-chip{max-width:150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:10px;font-weight:800;letter-spacing:.4px;background:#4e1424;color:#dac8a8;border:1px solid #852640;padding:5px 9px;border-radius:2px;cursor:pointer}
+.ps-chip.ok{background:#eadfca;color:#3a0f1b;border-color:#eadfca}
+.ps-chip.off{background:transparent;color:#c3aa81;border-color:#c3aa81}
+.pin-btn{width:30px;height:28px;font-size:13px;background:transparent;border:1px solid #852640;border-radius:2px;cursor:pointer;opacity:.7}
+.pin-btn.on{background:#eadfca;border-color:#eadfca;opacity:1}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:#2a0a12}::-webkit-scrollbar-thumb{background:#852640;border-radius:2px}
+
+/* ---------- NASAQ Studio+ font and template libraries ---------- */
+.font-select-row{display:flex;gap:7px;align-items:center}.font-select-row select{flex:1;min-width:0}.font-select-row .compact{width:42px;min-width:42px;padding:8px 4px}
+.font-list,.template-list,.template-layers{display:flex;flex-direction:column;gap:7px;margin:10px 0 14px;max-height:320px;overflow:auto;padding-right:2px}
+.font-row{display:flex;flex-direction:column;gap:4px;width:100%;padding:10px 12px;text-align:left;background:#2a0a12;border:1px solid #6b1c31;color:#f6efe2;cursor:pointer;border-radius:2px}
+.font-row:hover,.font-row.selected{border-color:#eadfca;background:#4e1424}
+.font-row-sample{font-size:21px;line-height:1.35;overflow-wrap:anywhere}
+.font-row-details{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#cdbfae}
+.font-row-details b{font-size:12px}.font-row-details small{font-size:10px;color:#a8928f;direction:ltr;text-align:right;overflow-wrap:anywhere}
+.font-preview{display:flex;align-items:center;justify-content:center;min-height:88px;margin:8px 0 14px;padding:14px;text-align:center;overflow-wrap:anywhere;background:#ece2cf;color:#6e1e2e;border:1px solid #c3aa81;font-size:30px;line-height:1.3}
+.template-row{display:flex;gap:7px;align-items:stretch}.template-row .load{flex:1;min-width:0;text-align:left;padding:10px 12px;background:#2a0a12;border:1px solid #6b1c31;color:#f6efe2;cursor:pointer;overflow-wrap:anywhere}.template-row .load:hover{border-color:#eadfca;background:#4e1424}.template-row .del{width:38px;flex:0 0 38px;background:transparent;border:1px solid #6b1c31;color:#c3aa81;cursor:pointer}
+.template-layer{padding:10px;border:1px solid #6b1c31;background:#2a0a12}.template-layer label{display:block;font-size:12px;font-weight:800;color:#eadfca;margin-bottom:7px;overflow-wrap:anywhere}.template-layer textarea{width:100%;min-height:58px;resize:vertical;background:#1d070d;color:#f6efe2;border:1px solid #6b1c31;padding:9px;font:inherit;outline:none}.template-layer textarea:focus{border-color:#c3aa81}
+
+/* ---------- Unified Style Library (section 03) ---------- */
+.style-library-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 14px;padding-bottom:10px;border-bottom:1px solid #6b1c31}
+.style-library-tab{flex:1 1 100px;min-width:0;padding:10px 8px;background:#2a0a12;border:1px solid #6b1c31;border-radius:3px;color:#dac8a8;font-size:12px;font-weight:800;cursor:pointer}
+.style-library-tab:hover{border-color:#c3aa81;color:#f6efe2}
+.style-library-tab.active{background:#eadfca;border-color:#eadfca;color:#4e1424}
+.style-library-panel{display:none;min-width:0;padding:4px 0 2px}
+.style-library-panel.active{display:block}
+.style-library-panel[hidden]{display:none!important}
+.style-library-panel .section-title{margin-top:8px}
+.style-library-panel .primary,.style-library-panel .secondary{margin-top:7px}
+
+/* Account / license gate */
+.auth-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,rgba(110,30,46,.32),transparent 55%),rgba(20,7,12,.97);backdrop-filter:blur(18px);overflow:auto}
+.auth-gate[hidden]{display:none!important}.auth-card{width:min(100%,390px);border:1px solid rgba(236,226,207,.18);border-radius:22px;padding:26px;background:linear-gradient(155deg,#281019,#160a0e);box-shadow:0 24px 90px #0008;color:#ece2cf}.auth-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:#6e1e2e;color:#ece2cf;font-size:27px;font-weight:800;margin-bottom:20px}.auth-card h2{font-size:23px;line-height:1.35;margin:8px 0}.auth-lead,.auth-foot{font-size:12px;line-height:1.8;color:#c4b3b5}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#11070b;padding:5px;border-radius:12px;margin:20px 0}.auth-tab{border:0;border-radius:9px;padding:10px;background:transparent;color:#bba8ac;cursor:pointer}.auth-tab.active{background:#6e1e2e;color:#fff}.auth-card label{display:block;font-size:12px;margin:12px 0 6px;color:#e8d9d7}.auth-card input{width:100%;box-sizing:border-box;border:1px solid #50313a;background:#10070b;color:#fff;border-radius:10px;padding:12px;outline:none}.auth-card input:focus{border-color:#c17c8a;box-shadow:0 0 0 3px #6e1e2e55}.auth-submit{width:100%;margin-top:18px}.auth-message{font-size:12px;line-height:1.7;min-height:36px;color:#e4c6a1}.auth-message.error{color:#ff9b9b}.auth-message.success{color:#b6e6c3}.auth-foot{text-align:center;border-top:1px solid #ffffff14;padding-top:12px;margin-bottom:0}
