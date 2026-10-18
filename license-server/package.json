@@ -1,0 +1,9 @@
+{
+  "name": "nasaq-license-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NASAQ Studio+ account approval and license API/admin portal",
+  "main": "server.js",
+  "scripts": {"start":"node server.js","create-admin":"node create-admin.js"},
+  "dependencies": {"bcryptjs":"^2.4.3","express":"^4.21.2","express-rate-limit":"^7.5.0","helmet":"^8.0.0","jsonwebtoken":"^9.0.2","pg":"^8.13.1"}
+}

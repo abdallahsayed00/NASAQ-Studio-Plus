@@ -1,0 +1,43 @@
+{
+  "name": "nasaq-studio",
+  "version": "1.3.0",
+  "description": "NASAQ Studio+ with server-verified account approval and license gate",
+  "main": "main.js",
+  "author": "Abdallah Sayed",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/jsx-test.js",
+    "dist": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "^44.8.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "design.nasaq.studio",
+    "productName": "NASAQ Studio+",
+    "asar": false,
+    "files": [
+      "main.js",
+      "preload.js",
+      "psbridge.js",
+      "jsx/**",
+      "renderer/**",
+      "build/**"
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "artifactName": "NASAQ-Studio-Plus-${version}-${os}.${ext}"
+  }
+}

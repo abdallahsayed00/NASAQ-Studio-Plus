@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./renderer.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<title>NASAQ Studio+</title>
+</head>
+<body>
+  <div id="curtain" aria-hidden="true">
+    <div class="half top"></div><div class="half bottom"></div>
+    <div class="stage"><div class="logo">N</div><div class="word">NASAQ STUDIO+</div><div class="rule"></div></div>
+  </div>
+  <section id="authGate" class="auth-gate" aria-modal="true" role="dialog" aria-labelledby="authTitle">
+    <div class="auth-card">
+      <div class="auth-mark">نَ</div><div class="eyebrow">NASAQ STUDIO+ · LICENSED ACCESS</div>
+      <h2 id="authTitle">حسابك يفتح لك الاستوديو</h2>
+      <p class="auth-lead">سجّل الدخول. الحسابات الجديدة تحتاج موافقة الإدارة وتفعيل الترخيص قبل الاستخدام.</p>
+      <div class="auth-tabs"><button type="button" class="auth-tab active" data-auth-mode="login">تسجيل الدخول</button><button type="button" class="auth-tab" data-auth-mode="register">إنشاء حساب</button></div>
+      <form id="authForm">
+        <div id="authNameWrap" hidden><label for="authName">الاسم الكامل</label><input id="authName" autocomplete="name" maxlength="100" placeholder="اسمك" /></div>
+        <label for="authEmail">البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="username" required maxlength="254" placeholder="name@example.com" />
+        <label for="authPassword">كلمة المرور</label><input id="authPassword" type="password" autocomplete="current-password" required minlength="10" maxlength="128" placeholder="10 أحرف على الأقل" />
+        <button id="authSubmit" class="primary auth-submit" type="submit"><span class="fill"></span><span class="label">تسجيل الدخول</span></button>
+      </form>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite">الاتصال بخادم التراخيص مطلوب لاستخدام البرنامج.</p>
+      <p class="auth-foot">اتصال آمن · جهاز واحد لكل ترخيص · مراجعة يدوية للحسابات<br><a class="ext-link" data-ext href="https://www.facebook.com/AbdallahSayed09/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V14h2.7v8h3.1z"/></svg> تطوير: Abdallah Sayed</a></p>
+    </div>
+  </section>
+  <section id="payGate" class="auth-gate" hidden aria-modal="true" role="dialog" aria-labelledby="payTitle">
+    <div class="auth-card pay-card" dir="rtl">
+      <div class="pay-top"><div class="auth-mark">نَ</div><button id="payLogoutBtn" class="pay-logout" type="button">تسجيل الخروج</button></div>
+      <div class="eyebrow">NASAQ STUDIO+ · ACTIVATION</div>
+      <h2 id="payTitle">فعّل حسابك</h2>
+      <p id="payWho" class="auth-lead"></p>
+      <div id="payStatusBox" class="pay-status" hidden></div>
+      <div id="payFlow">
+        <div class="pay-step"><span>1</span>اختار الباقة</div>
+        <div id="planList" class="plan-list"></div>
+        <div class="pay-step"><span>2</span>حوّل المبلغ على فودافون كاش</div>
+        <div class="pay-number-box">
+          <small>رقم فودافون كاش</small>
+          <strong id="payNumber" dir="ltr">—</strong>
+          <em id="payAmountHint">اختار باقة عشان يظهر المبلغ المطلوب.</em>
+          <button id="payCopyBtn" class="secondary" type="button">نسخ الرقم</button>
+        </div>
+        <div class="pay-step"><span>3</span>ارفع صورة سكرين التحويل</div>
+        <label class="pay-drop" for="payFile" id="payDrop"><input id="payFile" type="file" accept="image/png,image/jpeg,image/webp" hidden><span id="payDropText">اضغط هنا واختار صورة السكرين</span><img id="payPreview" alt="" hidden></label>
+        <label for="payPhone">رقم المحفظة اللي حوّلت منها (اختياري)</label>
+        <input id="payPhone" type="tel" inputmode="tel" dir="ltr" maxlength="20" placeholder="01xxxxxxxxx" autocomplete="off">
+        <button id="paySubmit" class="primary auth-submit" type="button"><span class="fill"></span><span class="label">إرسال للمراجعة</span></button>
+      </div>
+      <p id="payMessage" class="auth-message" role="status" aria-live="polite"></p>
+      <button id="payRefreshBtn" class="pay-link" type="button">↻ تحديث حالة الطلب</button>
+      <p class="auth-foot">محتاج مساعدة؟ <a class="ext-link" data-ext href="https://www.facebook.com/AbdallahSayed09/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V14h2.7v8h3.1z"/></svg> تواصل معنا على فيسبوك</a></p>
+    </div>
+  </section>
+  <header>
+    <div class="mark">N</div>
+    <div class="brand-copy"><h1>NASAQ Studio+</h1><p>Creative tools for Photoshop</p></div>
+    <button id="psChip" class="ps-chip" title="اضغط لإعادة الفحص">بفحص فوتوشوب…</button><button id="accountLogoutBtn" class="pin-btn" title="تسجيل الخروج من NASAQ Studio+" hidden>⏻</button><button id="pinBtn" class="pin-btn" title="تثبيت النافذة فوق فوتوشوب">📌</button>
+    <div id="sweep"></div>
+  </header>
+
+  <main>
+    <section id="homeView" class="view active">
+      <div class="welcome"><div class="eyebrow rise">YOUR CREATIVE WORKSPACE</div><h2 class="rise">صمّم باحتراف.<br><span>وخلي التفاصيل علينا.</span></h2><p class="rise">اختار الأداة اللي محتاجها، وهنطوّر كل قسم مع بعض خطوة بخطوة.</p></div>
+      <button class="tool-card" data-open="designPromptView">
+        <span class="bar"></span><span class="wash"></span><span class="tool-icon">✎</span><span class="tool-copy"><b>01 / Design Prompt Lab</b><small>كوّن برومبت تفصيلي لتصميمك من الفكرة لحد الإضاءة والتكوين.</small><em>فتح الأداة <span>↗</span></em></span><span class="card-arrow">›</span>
+      </button>
+      <button class="tool-card" data-open="surrealView">
+        <span class="bar"></span><span class="wash"></span><span class="tool-icon">◈</span><span class="tool-copy"><b>02 / Surreal Thumbnail Lab</b><small>برومبتات سينمائية وسيريالية لثامبنيلز يوتيوب جذابة.</small><em>فتح الأداة <span>↗</span></em></span><span class="card-arrow">›</span>
+      </button>
+      <button class="tool-card" data-open="socialView">
+        <span class="bar"></span><span class="wash"></span><span class="tool-icon">◉</span><span class="tool-copy"><b>03 / Social Icons</b><small>ضيف أيقونات فيسبوك وتيكتوك ويوتيوب وانستجرام للتصميم بضغطة واحدة.</small><em>فتح الأداة <span>↗</span></em></span><span class="card-arrow">›</span>
+      </button>
+      <button class="tool-card" data-open="textView">
+        <span class="bar"></span><span class="wash"></span><span class="tool-icon">Aa</span><span class="tool-copy"><b>04 / Text Studio</b><small>اكتب بالستايل اللي إنت تختاره بس — مفيش حاجة بتتطبق إلا اللي تفعّلها بنفسك.</small><em>فتح الأداة <span>↗</span></em></span><span class="card-arrow">›</span>
+      </button>
+      <div class="home-note"><span class="note-dot"></span> قوالبك وخطوطك — داخل NASAQ Studio وبنفس هوية نسق.</div>
+      <a class="dev-card ext-link" data-ext href="https://www.facebook.com/AbdallahSayed09/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V14h2.7v8h3.1z"/></svg><span><b>Abdallah Sayed</b><small>مطوّر NASAQ Studio+ · تابعنا على فيسبوك</small></span><em>↗</em></a>
+    </section>
+
+    <section id="designPromptView" class="view">
+      <button class="back-button" data-home>← الرئيسية</button>
+      <div class="page-heading"><span class="eyebrow">TOOL 01</span><h2>Social Media Prompt Lab</h2><p>حدد التفاصيل، وولّد برومبت احترافي لتصميم سوشيال ميديا بمقاس 1350 × 1080 بكسل.</p></div>
+      <div class="card form-card">
+        <div class="section-title"><span class="number">01</span><h3>الشخص والهوية</h3></div>
+        <label for="designSubject">وصف الشخص أو المستر</label>
+        <textarea id="designSubject" rows="2" placeholder="Write in English: e.g. a science teacher wearing glasses with a short beard..."></textarea>
+        <label for="designReference">تعليمات الصور المرجعية</label>
+        <textarea id="designReference" rows="2" placeholder="Write in English: Reference Image 1 is for identity only. Do not replace or reinterpret the face."></textarea>
+        <div class="identity-note">مهم: الاختيارات الجاهزة تتحول تلقائيًا إلى الإنجليزية. اكتب أي وصف حر في الخانات المخصصة باللغة الإنجليزية لضمان أن يكون البرومبت النهائي إنجليزيًا بالكامل.<br>أولوية قصوى: تثبيت هوية الوجه كما هي في الصورة المرجعية، حتى مع تغيير تعبير الوجه. لا تغيّر شكل العين أو الأنف أو الفم أو الفك أو المسافات أو العمر أو لون البشرة أو الشعر أو اللحية أو النظارة أو أي سمة مميزة.</div>
+
+        <div class="section-title field-section"><span class="number">02</span><h3>رياكشن / تعبير الوجه</h3></div>
+        <label for="designReaction">اختار التعبير</label>
+        <select id="designReaction"><option value="">اختار تعبير الوجه...</option><option data-en="A subtle, confident natural smile with relaxed eyes and a slight lift at the corners of the mouth; preserve the person’s facial structure.">ابتسامة بسيطة وواثقة</option><option data-en="A clearly surprised reaction with raised eyebrows and alert eyes, without cartoonish facial distortion.">دهشة واضحة مع رفع الحواجب</option><option data-en="A strong astonished reaction with widened but realistic eyes and a naturally open mouth; do not reshape facial features.">صدمة وانبهار</option><option data-en="A focused, serious expression with attentive eyes, gently engaged brows, and a relaxed jaw.">تركيز وجدية</option><option data-en="A thoughtful expression with a subtle sideward gaze and naturally relaxed facial muscles.">تفكير مع نظرة جانبية</option><option data-en="A joyful, enthusiastic expression with bright eyes and a genuine smile, without exaggeration.">سعادة وحماس</option><option data-en="A mildly concerned, alert expression with subtle brow tension and natural eyes; avoid exaggerated fear.">قلق أو ترقب</option><option data-en="A mildly displeased expression with restrained brow tension and a firm but natural mouth; no exaggerated anger.">غضب خفيف بدون مبالغة</option><option data-en="A natural engaged teaching expression, as if explaining an idea to an audience.">شرح وتفاعل طبيعي</option><option data-en="A calm, confident expression with relaxed brows, steady eyes, and natural facial proportions.">ثقة وهدوء</option><option value="custom">تعبير مخصص</option></select>
+        <label for="designReactionCustom">وصف التعبير لو الاختيارات مش مناسبة</label><input id="designReactionCustom" placeholder="Describe the brows, eyes, and mouth in English...">
+
+        <div class="section-title field-section"><span class="number">03</span><h3>ألوان التصميم</h3></div>
+        <label for="designColors">اختار لوحة الألوان</label>
+        <select id="designColors"><option value="">اختار لوحة ألوان...</option><option data-en="A bold red-and-white palette with clear contrast and controlled saturation.">أحمر وأبيض مع تباين قوي</option><option data-en="A rich purple primary palette with light orange accents and balanced contrast.">بنفسجي وبرتقالي فاتح</option><option data-en="Green as the primary color with sky-blue supporting accents.">أخضر وسماوي</option><option data-en="Deep navy as the primary color with luminous sky-blue accents.">كحلي وسماوي</option><option data-en="A premium black-and-gold palette with restrained metallic highlights.">أسود وذهبي فاخر</option><option data-en="A refined burgundy-and-beige palette with warm neutral balance.">خمري وبيج</option><option data-en="A vibrant blue-and-yellow palette with strong visual hierarchy.">أزرق وأصفر حيوي</option><option data-en="A clean white-and-gray palette with crisp minimal contrast.">أبيض ورمادي بتصميم نظيف</option><option data-en="A warm palette of orange, red, and gold with cohesive tonal transitions.">ألوان دافئة: برتقالي وأحمر وذهبي</option><option data-en="A cool palette of blue, purple, and sky blue with cinematic depth.">ألوان باردة: أزرق وبنفسجي وسماوي</option><option value="custom">لوحة ألوان مخصصة</option></select>
+        <label for="designColorsCustom">وصف الألوان لو الاختيارات مش مناسبة</label><input id="designColorsCustom" placeholder="Describe the primary color, secondary color, and lighting color in English...">
+
+        <div class="section-title field-section"><span class="number">04</span><h3>وضعية الإيد</h3></div>
+        <label for="designHands">اختار وضعية الإيد</label>
+        <select id="designHands"><option value="">اختار وضعية الإيد...</option><option data-en="Use one hand to point clearly toward the intended design title area; keep the fingers anatomically correct.">إيد بتشير ناحية عنوان التصميم</option><option data-en="Raise one hand in a natural explanatory gesture at chest level.">إيد مرفوعة بإشارة شرح</option><option data-en="Hold both hands open in a welcoming, natural gesture.">الإيدين مفتوحتين بشكل ترحيبي</option><option data-en="Rest one hand lightly on the chin in a thoughtful pose without obscuring identifying facial features.">إيد على الذقن بوضعية تفكير</option><option data-en="Hold a book naturally with a believable grip and correct finger placement.">إيد ماسكة كتاب</option><option data-en="Hold a relevant subject-related tool naturally, with physically accurate grip and contact.">إيد ماسكة أداة مرتبطة بالموضوع</option><option data-en="Point toward a supporting visual element beside the person.">إيد بتشاور على عنصر بجانب الشخص</option><option data-en="Cross both arms naturally with believable shoulder, elbow, wrist, and hand placement.">الإيدين متقاطعتين بشكل طبيعي</option><option data-en="Raise one hand in a measured emphasis gesture, as if highlighting an important point.">إيد مرفوعة للتأكيد على نقطة</option><option data-en="Keep the hand relaxed naturally beside the body, with anatomically plausible fingers.">وضعية إيد طبيعية بجانب الجسم</option><option value="custom">وضعية مخصصة</option></select>
+        <label for="designHandsCustom">وصف وضعية الإيد لو الاختيارات مش مناسبة</label><input id="designHandsCustom" placeholder="Describe right/left hand, finger direction, and held object in English..."><p class="hint">تأكيد تشريحي: يدان طبيعيتان، خمس أصابع لكل يد، مفاصل واتجاهات واقعية، دون أصابع زائدة أو ملتحمة.</p>
+
+        <div class="section-title field-section"><span class="number">05</span><h3>الملابس</h3></div>
+        <label for="designClothes">اختار نمط الملابس</label>
+        <select id="designClothes"><option value="">اختار الملابس...</option><option data-en="A plain T-shirt with realistic fabric, seams, folds, and fit.">تيشيرت سادة</option><option data-en="A striped T-shirt with clean, consistent stripe spacing and realistic fabric folds.">تيشيرت مخطط</option><option data-en="A casual shirt with natural fabric texture, seams, and folds.">قميص كاجوال</option><option data-en="A formal button-up shirt with a clean collar and realistic fabric structure.">قميص رسمي</option><option data-en="A well-fitted formal suit with realistic tailoring, lapels, and fabric texture.">بدلة رسمية</option><option data-en="A realistic laboratory coat with accurate seams, pockets, and natural folds.">بالطو معمل</option><option data-en="Smart casual teacher clothing, professional but approachable, with realistic materials.">ملابس مدرس / معلم كاجوال</option><option data-en="Clothing appropriate to the design concept, without unrequested accessories or logos.">ملابس مرتبطة بفكرة التصميم</option><option data-en="Preserve the exact clothing shown in the reference image, including its cut, colors, patterns, and material.">الحفاظ على الملابس الموجودة في المرجع</option><option value="custom">ملابس مخصصة</option></select>
+        <label for="designClothesCustom">وصف الملابس لو الاختيارات مش مناسبة</label><input id="designClothesCustom" placeholder="Describe garment type, colors, patterns, and materials in English...">
+
+        <div class="section-title field-section"><span class="number">06</span><h3>وضعية الكاميرا</h3></div>
+        <label for="designCamera">اختار زاوية الكاميرا</label>
+        <select id="designCamera"><option value="">اختار زاوية الكاميرا...</option><option data-en="Eye-level frontal shot. Place the camera at eye height and aim horizontally for a natural, balanced view.">مواجهة مباشرة على مستوى العين</option><option data-en="Subtle low-angle shot with the camera slightly below eye level, aiming upward while preserving natural facial proportions.">زاوية منخفضة قليلًا لإبراز الشخصية</option><option data-en="Slight high-angle shot with the camera just above eye level and angled gently downward.">زاوية مرتفعة قليلًا</option><option data-en="Close portrait framing the face and shoulders while keeping the full head visible and undistorted.">لقطة قريبة للوجه والكتفين</option><option data-en="Medium waist-up shot with a clear view of the upper body and natural perspective.">لقطة متوسطة من الخصر لأعلى</option><option data-en="Three-quarter camera view with the face turned toward the lens and identity clearly recognizable.">زاوية ثلاثة أرباع مع توجيه الوجه للكاميرا</option><option data-en="Side-oriented camera view while keeping enough of the face visible to preserve identity.">من الجانب مع بقاء ملامح الوجه واضحة</option><option data-en="Cinematic wide-lens perspective with controlled distortion and realistic anatomy.">عدسة واسعة سينمائية مع منظور مضبوط</option><option value="custom">زاوية مخصصة</option></select>
+        <label for="designCameraCustom">وصف الكاميرا لو الاختيارات مش مناسبة</label><input id="designCameraCustom" placeholder="Describe camera distance, height, direction, and shot type in English...">
+
+        <div class="section-title field-section"><span class="number">07</span><h3>منظور الشخص داخل التصميم</h3></div>
+        <label for="designPerspective">اختار المنظور</label>
+        <select id="designPerspective"><option value="">اختار منظور الشخص...</option><option data-en="Make the person large, prominent, and close to the camera as the primary focal point.">الشخص كبير وقريب من الكاميرا وهو العنصر الأساسي</option><option data-en="Show the person from approximately the waist up with clear cinematic depth behind them.">نصف الجسم ظاهر مع عمق واضح</option><option data-en="Place the person in the foreground with a deep, layered cinematic background.">الشخص في المقدمة والخلفية ممتدة بعمق سينمائي</option><option data-en="Use realistic natural perspective without facial or body distortion.">منظور واقعي طبيعي بدون تشويه</option><option data-en="Use a dramatic wide perspective while preserving believable facial and body proportions.">منظور واسع درامي مع الحفاظ على تناسب الوجه</option><option data-en="Show the person physically interacting with a three-dimensional element beside them.">الشخص يتفاعل مع عنصر ثلاثي الأبعاد بجانبه</option><option data-en="Place the person near the center and reserve intentional negative space for typography.">الشخص في منتصف التصميم مع مساحة للنص</option><option data-en="Place the person on one side of the composition and reserve clean negative space for typography.">الشخص على أحد الجانبين مع مساحة فارغة للنص</option><option value="custom">منظور مخصص</option></select>
+        <label for="designPerspectiveCustom">وصف المنظور لو الاختيارات مش مناسبة</label><input id="designPerspectiveCustom" placeholder="Describe subject placement, scale, and relation to nearby elements in English...">
+
+        <div class="section-title field-section"><span class="number">08</span><h3>فكرة التصميم والخلفية</h3></div>
+        <label for="designIdea">الفكرة أو موضوع التصميم</label><textarea id="designIdea" rows="2" placeholder="Describe the design idea and intended message in English..."></textarea>
+        <label for="designBackground">الخلفية والعناصر البصرية</label><textarea id="designBackground" rows="2" placeholder="Describe the setting, surreal elements, depth, and materials in English..."></textarea>
+        <label for="designText">النص المكتوب داخل التصميم (اختياري)</label><textarea id="designText" rows="2" placeholder="Enter the exact text to appear in the artwork; Arabic text is allowed here if it must appear in the design."></textarea>
+        <label for="designExtra">تفاصيل إضافية (اختياري)</label><textarea id="designExtra" rows="2" placeholder="Describe lighting, style, exclusions, and special requirements in English..."></textarea>
+        <div class="format-chip"><span>مقاس الإخراج الثابت</span><strong>1350 × 1080 px</strong><small>Landscape social media canvas · 5:4</small></div>
+        <button id="designPromptBtn" class="primary"><span class="fill"></span><span class="label">✦ توليد البرومبت ونسخه تلقائيًا</span></button>
+        <label for="designPromptOutput">البرومبت النهائي</label><textarea id="designPromptOutput" class="output" rows="16" placeholder="بعد الضغط على توليد، البرومبت هيظهر هنا ويتنسخ تلقائيًا..."></textarea>
+        <button class="secondary copy-button" data-copy="designPromptOutput">نسخ البرومبت مرة أخرى</button>
+      </div>
+    </section>
+
+    <section id="surrealView" class="view">
+      <button class="back-button" data-home>← الرئيسية</button>
+      <div class="page-heading"><span class="eyebrow">TOOL 02</span><h2>Surreal Thumbnail Lab</h2><p>حدد التفاصيل، وولّد برومبت احترافي لثامبنيل يوتيوب سيريالي وسينمائي بمقاس 1920 × 1080 بكسل.</p></div>
+      <div class="card form-card">
+        <div class="section-title"><span class="number">01</span><h3>الموضوع والفكرة</h3></div>
+        <label for="thumbTopic">موضوع الدرس أو الفيديو</label><input id="thumbTopic" placeholder="مثال: Chemical Reactions">
+        <label for="thumbConcept">الفكرة السيريالية الرئيسية</label><textarea id="thumbConcept" rows="3" placeholder="Describe a strange but readable surreal visual concept tied to the lesson, with intentional impossible scale..."></textarea>
+        <div class="section-title field-section"><span class="number">02</span><h3>الشخصية والهوية</h3></div>
+        <label for="thumbPerson">وصف الشخصية الرئيسية / المستر</label><textarea id="thumbPerson" rows="2" placeholder="Write in English: e.g. a science teacher wearing glasses with a short beard..."></textarea>
+        <label for="thumbIdentity">تعليمات الحفاظ على الهوية</label><textarea id="thumbIdentity" rows="2" placeholder="Write in English: use Reference Image 1 for identity only; do not alter face, age, beard, or glasses..."></textarea>
+        <label for="thumbReferences">الصور المرجعية وترتيبها</label><textarea id="thumbReferences" rows="2" placeholder="Write reference roles in English: Image 1 identity only, Image 2 clothing/product only, etc..."></textarea>
+        <div class="identity-note">أولوية قصوى: تثبيت هوية الوجه كما هي في الصورة المرجعية، حتى مع تغيير تعبير الوجه. لا تغيّر شكل العين أو الأنف أو الفم أو الفك أو العمر أو لون البشرة أو الشعر أو اللحية أو النظارة.</div>
+        <div class="section-title field-section"><span class="number">03</span><h3>مظهر وحركة الشخصية</h3></div>
+        <label for="thumbReaction">اختار التعبير</label>
+        <select id="thumbReaction"><option value="">اختار تعبير الوجه...</option><option data-en="A subtle, confident natural smile with relaxed eyes and a slight lift at the corners of the mouth; preserve the person’s facial structure.">ابتسامة بسيطة وواثقة</option><option data-en="A clearly surprised reaction with raised eyebrows and alert eyes, without cartoonish facial distortion.">دهشة واضحة مع رفع الحواجب</option><option data-en="A strong astonished reaction with widened but realistic eyes and a naturally open mouth; do not reshape facial features.">صدمة وانبهار</option><option data-en="A focused, serious expression with attentive eyes, gently engaged brows, and a relaxed jaw.">تركيز وجدية</option><option data-en="A thoughtful expression with a subtle sideward gaze and naturally relaxed facial muscles.">تفكير مع نظرة جانبية</option><option data-en="A joyful, enthusiastic expression with bright eyes and a genuine smile, without exaggeration.">سعادة وحماس</option><option data-en="A mildly concerned, alert expression with subtle brow tension and natural eyes; avoid exaggerated fear.">قلق أو ترقب</option><option data-en="A mildly displeased expression with restrained brow tension and a firm but natural mouth; no exaggerated anger.">غضب خفيف بدون مبالغة</option><option data-en="A natural engaged teaching expression, as if explaining an idea to an audience.">شرح وتفاعل طبيعي</option><option data-en="A calm, confident expression with relaxed brows, steady eyes, and natural facial proportions.">ثقة وهدوء</option><option value="custom">تعبير مخصص</option></select>
+        <label for="thumbReactionCustom">وصف التعبير لو الاختيارات مش مناسبة</label><input id="thumbReactionCustom" placeholder="Describe the brows, eyes, and mouth in English...">
+        <label for="thumbHands">اختار وضعية الإيد</label>
+        <select id="thumbHands"><option value="">اختار وضعية الإيد...</option><option data-en="Use one hand to point clearly toward the intended design title area; keep the fingers anatomically correct.">إيد بتشير ناحية عنوان التصميم</option><option data-en="Raise one hand in a natural explanatory gesture at chest level.">إيد مرفوعة بإشارة شرح</option><option data-en="Hold both hands open in a welcoming, natural gesture.">الإيدين مفتوحتين بشكل ترحيبي</option><option data-en="Rest one hand lightly on the chin in a thoughtful pose without obscuring identifying facial features.">إيد على الذقن بوضعية تفكير</option><option data-en="Hold a book naturally with a believable grip and correct finger placement.">إيد ماسكة كتاب</option><option data-en="Hold a relevant subject-related tool naturally, with physically accurate grip and contact.">إيد ماسكة أداة مرتبطة بالموضوع</option><option data-en="Point toward a supporting visual element beside the person.">إيد بتشاور على عنصر بجانب الشخص</option><option data-en="Cross both arms naturally with believable shoulder, elbow, wrist, and hand placement.">الإيدين متقاطعتين بشكل طبيعي</option><option data-en="Raise one hand in a measured emphasis gesture, as if highlighting an important point.">إيد مرفوعة للتأكيد على نقطة</option><option data-en="Keep the hand relaxed naturally beside the body, with anatomically plausible fingers.">وضعية إيد طبيعية بجانب الجسم</option><option value="custom">وضعية مخصصة</option></select>
+        <label for="thumbHandsCustom">وصف وضعية الإيد لو الاختيارات مش مناسبة</label><input id="thumbHandsCustom" placeholder="Describe right/left hand, finger direction, and held object in English...">
+        <p class="hint">تأكيد تشريحي: يدان طبيعيتان، خمس أصابع لكل يد، مفاصل واتجاهات واقعية، دون أصابع زائدة أو ملتحمة.</p>
+        <label for="thumbClothes">اختار نمط الملابس</label>
+        <select id="thumbClothes"><option value="">اختار الملابس...</option><option data-en="A plain T-shirt with realistic fabric, seams, folds, and fit.">تيشيرت سادة</option><option data-en="A striped T-shirt with clean, consistent stripe spacing and realistic fabric folds.">تيشيرت مخطط</option><option data-en="A casual shirt with natural fabric texture, seams, and folds.">قميص كاجوال</option><option data-en="A formal button-up shirt with a clean collar and realistic fabric structure.">قميص رسمي</option><option data-en="A well-fitted formal suit with realistic tailoring, lapels, and fabric texture.">بدلة رسمية</option><option data-en="A realistic laboratory coat with accurate seams, pockets, and natural folds.">بالطو معمل</option><option data-en="Smart casual teacher clothing, professional but approachable, with realistic materials.">ملابس مدرس / معلم كاجوال</option><option data-en="Clothing appropriate to the design concept, without unrequested accessories or logos.">ملابس مرتبطة بفكرة التصميم</option><option data-en="Preserve the exact clothing shown in the reference image, including its cut, colors, patterns, and material.">الحفاظ على الملابس الموجودة في المرجع</option><option value="custom">ملابس مخصصة</option></select>
+        <label for="thumbClothesCustom">وصف الملابس لو الاختيارات مش مناسبة</label><input id="thumbClothesCustom" placeholder="Describe garment type, colors, patterns, and materials in English...">
+        <div class="section-title field-section"><span class="number">04</span><h3>الكاميرا والتكوين</h3></div>
+        <label for="thumbCamera">اختار زاوية الكاميرا</label>
+        <select id="thumbCamera"><option value="">اختار زاوية الكاميرا...</option><option data-en="Eye-level frontal shot. Place the camera at eye height and aim horizontally for a natural, balanced view.">مواجهة مباشرة على مستوى العين</option><option data-en="Subtle low-angle shot with the camera slightly below eye level, aiming upward while preserving natural facial proportions.">زاوية منخفضة قليلًا لإبراز الشخصية</option><option data-en="Slight high-angle shot with the camera just above eye level and angled gently downward.">زاوية مرتفعة قليلًا</option><option data-en="Close portrait framing the face and shoulders while keeping the full head visible and undistorted.">لقطة قريبة للوجه والكتفين</option><option data-en="Medium waist-up shot with a clear view of the upper body and natural perspective.">لقطة متوسطة من الخصر لأعلى</option><option data-en="Three-quarter camera view with the face turned toward the lens and identity clearly recognizable.">زاوية ثلاثة أرباع مع توجيه الوجه للكاميرا</option><option data-en="Side-oriented camera view while keeping enough of the face visible to preserve identity.">من الجانب مع بقاء ملامح الوجه واضحة</option><option data-en="Cinematic wide-lens perspective with controlled distortion and realistic anatomy.">عدسة واسعة سينمائية مع منظور مضبوط</option><option value="custom">زاوية مخصصة</option></select>
+        <label for="thumbCameraCustom">وصف الكاميرا لو الاختيارات مش مناسبة</label><input id="thumbCameraCustom" placeholder="Describe camera distance, height, direction, and shot type in English...">
+        <label for="thumbPerspective">اختار المنظور</label>
+        <select id="thumbPerspective"><option value="">اختار منظور الشخص...</option><option data-en="Make the person large, prominent, and close to the camera as the primary focal point.">الشخص كبير وقريب من الكاميرا وهو العنصر الأساسي</option><option data-en="Show the person from approximately the waist up with clear cinematic depth behind them.">نصف الجسم ظاهر مع عمق واضح</option><option data-en="Place the person in the foreground with a deep, layered cinematic background.">الشخص في المقدمة والخلفية ممتدة بعمق سينمائي</option><option data-en="Use realistic natural perspective without facial or body distortion.">منظور واقعي طبيعي بدون تشويه</option><option data-en="Use a dramatic wide perspective while preserving believable facial and body proportions.">منظور واسع درامي مع الحفاظ على تناسب الوجه</option><option data-en="Show the person physically interacting with a three-dimensional element beside them.">الشخص يتفاعل مع عنصر ثلاثي الأبعاد بجانبه</option><option data-en="Place the person near the center and reserve intentional negative space for typography.">الشخص في منتصف التصميم مع مساحة للنص</option><option data-en="Place the person on one side of the composition and reserve clean negative space for typography.">الشخص على أحد الجانبين مع مساحة فارغة للنص</option><option value="custom">منظور مخصص</option></select>
+        <label for="thumbPerspectiveCustom">وصف المنظور لو الاختيارات مش مناسبة</label><input id="thumbPerspectiveCustom" placeholder="Describe subject placement, scale, and relation to nearby elements in English...">
+        <label for="thumbLayout">التكوين ومساحة النص</label><textarea id="thumbLayout" rows="2" placeholder="Describe 16:9 framing, subject/title placement, and negative space in English..."></textarea>
+        <div class="section-title field-section"><span class="number">05</span><h3>المشهد والخلفية</h3></div>
+        <label for="thumbEnvironment">الخلفية والبيئة</label><textarea id="thumbEnvironment" rows="2" placeholder="Describe the environment, depth, background elements, and atmosphere in English..."></textarea>
+        <label for="thumbElements">العناصر المتطايرة / المؤثرات</label><textarea id="thumbElements" rows="2" placeholder="Describe floating particles, books, scientific props, sparks, smoke, or lesson-related elements in English..."></textarea>
+        <label for="thumbBlend">دمج الشخص مع التصميم (اختياري)</label><textarea id="thumbBlend" rows="2" placeholder="Optional, in English: e.g. warm orange rim light from the explosion on the left, cool blue fill from the background..."></textarea>
+        <div class="section-title field-section"><span class="number">06</span><h3>الألوان والإضاءة</h3></div>
+        <label for="thumbColors">اختار لوحة الألوان</label>
+        <select id="thumbColors"><option value="">اختار لوحة ألوان...</option><option data-en="A bold red-and-white palette with clear contrast and controlled saturation.">أحمر وأبيض مع تباين قوي</option><option data-en="A rich purple primary palette with light orange accents and balanced contrast.">بنفسجي وبرتقالي فاتح</option><option data-en="Green as the primary color with sky-blue supporting accents.">أخضر وسماوي</option><option data-en="Deep navy as the primary color with luminous sky-blue accents.">كحلي وسماوي</option><option data-en="A premium black-and-gold palette with restrained metallic highlights.">أسود وذهبي فاخر</option><option data-en="A refined burgundy-and-beige palette with warm neutral balance.">خمري وبيج</option><option data-en="A vibrant blue-and-yellow palette with strong visual hierarchy.">أزرق وأصفر حيوي</option><option data-en="A clean white-and-gray palette with crisp minimal contrast.">أبيض ورمادي بتصميم نظيف</option><option data-en="A warm palette of orange, red, and gold with cohesive tonal transitions.">ألوان دافئة: برتقالي وأحمر وذهبي</option><option data-en="A cool palette of blue, purple, and sky blue with cinematic depth.">ألوان باردة: أزرق وبنفسجي وسماوي</option><option value="custom">لوحة ألوان مخصصة</option></select>
+        <label for="thumbColorsCustom">وصف الألوان لو الاختيارات مش مناسبة</label><input id="thumbColorsCustom" placeholder="Describe the primary color, secondary color, and lighting color in English...">
+        <label for="thumbPalette">الإضاءة والتأثيرات (اختياري)</label><input id="thumbPalette" placeholder="مثال: cinematic rim light, soft haze">
+        <div class="section-title field-section"><span class="number">07</span><h3>العنوان والمحظورات</h3></div>
+        <label for="thumbTypography">عنوان الثامبنيل</label><textarea id="thumbTypography" rows="2" placeholder="Describe exact title wording, placement, colors, typography size, and whether it should be separate from the image, in English..."></textarea>
+        <label for="thumbAvoid">أشياء ممنوع تظهر</label><textarea id="thumbAvoid" rows="2" placeholder="List exclusions in English: face distortion, extra limbs, random text, cartoon style, clutter..."></textarea>
+        <div class="format-chip"><span>مقاس الإخراج الثابت</span><strong>1920 × 1080 px</strong><small>YouTube thumbnail · 16:9</small></div>
+        <button id="thumbPromptBtn" class="primary"><span class="fill"></span><span class="label">✦ توليد البرومبت ونسخه تلقائيًا</span></button>
+        <label for="thumbPromptOutput">البرومبت النهائي</label><textarea id="thumbPromptOutput" class="output" rows="16" placeholder="بعد الضغط على توليد، البرومبت هيظهر هنا ويتنسخ تلقائيًا..."></textarea>
+        <button class="secondary copy-button" data-copy="thumbPromptOutput">نسخ البرومبت مرة أخرى</button>
+      </div>
+    </section>
+
+    <section id="socialView" class="view">
+      <button class="back-button" data-home>← الرئيسية</button>
+      <div class="page-heading"><span class="eyebrow">TOOL 03</span><h2>Social Icons</h2><p>اختار الأيقونات واكتب اسم الحساب، وبضغطة واحدة يتضافوا في التصميم على حدود الجايد لاين وفي نص العرض.</p></div>
+      <div class="card form-card">
+        <div class="section-title"><span class="number">01</span><h3>الأيقونات</h3></div>
+        <p class="muted">اضغط على أي أيقونة لتشغيلها أو إيقافها.</p>
+        <div class="social-list">
+        <button class="social-row on" data-social="facebook"><span class="s-tile"><img src="assets/social-burgundy-facebook.png" alt=""></span><span class="s-name">فيسبوك</span><span class="s-check"><span class="s-tick">✓</span></span></button>
+        <button class="social-row on" data-social="tiktok"><span class="s-tile"><img src="assets/social-burgundy-tiktok.png" alt=""></span><span class="s-name">تيكتوك</span><span class="s-check"><span class="s-tick">✓</span></span></button>
+        <button class="social-row on" data-social="youtube"><span class="s-tile"><img src="assets/social-burgundy-youtube.png" alt=""></span><span class="s-name">يوتيوب</span><span class="s-check"><span class="s-tick">✓</span></span></button>
+        <button class="social-row on" data-social="instagram"><span class="s-tile"><img src="assets/social-burgundy-instagram.png" alt=""></span><span class="s-name">انستجرام</span><span class="s-check"><span class="s-tick">✓</span></span></button>
+        </div>
+
+        <div class="section-title field-section"><span class="number">02</span><h3>الشكل والمكان</h3></div>
+        <label for="socialMode">نوع التصميم والجايد لاين</label>
+        <select id="socialMode"><option value="social">سوشيال ميديا 1350×1080 · جايد 60 من كل جهة</option><option value="thumb">ثامبنيل يوتيوب 1920×1080 · جايد 80 / 100 / 80 / 100</option></select>
+        <label for="socialColor">لون الأيقونات</label>
+        <select id="socialColor"><option value="white">أبيض</option><option value="beige">بيج</option><option value="burgundy">برجاندي</option><option value="black">أسود</option></select>
+        <label for="socialOrient">شكل الترتيب</label>
+        <select id="socialOrient"><option value="row">صف أفقي (جنب بعض)</option><option value="column">عمود رأسي (تحت بعض)</option></select>
+        <label for="socialAlign">المكان الأفقي</label>
+        <select id="socialAlign"><option value="center">في النص</option><option value="left">شمال (على الجايد الشمال)</option><option value="right">يمين (على الجايد اليمين)</option></select>
+        <label for="socialPos">المكان الرأسي</label>
+        <select id="socialPos"><option value="bottom">أسفل (على الجايد السفلي)</option><option value="top">أعلى (على الجايد العلوي)</option><option value="middle">في النص</option></select>
+        <label for="socialName">اسم الحساب (اختياري)</label>
+        <input id="socialName" dir="auto" placeholder="@nasaq.studio">
+        <label for="socialNameSide">مكان الاسم</label>
+        <select id="socialNameSide"><option value="right">بعد الأيقونات (يمينها / تحتها)</option><option value="left">قبل الأيقونات (شمالها / فوقها)</option></select>
+        <label for="socialSize">حجم الأيقونة (بكسل)</label>
+        <input id="socialSize" type="number" value="72" min="24" max="300">
+        <label for="socialGap">المسافة بين الأيقونات (بكسل)</label>
+        <input id="socialGap" type="number" value="3" min="0" max="100">
+
+        <div class="format-chip"><span id="socialChipLabel">مقاس التصميم · الجايد لاين</span><strong id="socialChipValue">1350 × 1080 px · 60 px</strong><small>الأيقونات المدورة والاسم جنبها في نص العرض</small></div>
+        <button id="socialAddBtn" class="primary"><span class="fill"></span><span class="label">✦ إضافة الأيقونات للتصميم</span></button>
+      </div>
+    </section>
+
+    <section id="textView" class="view">
+      <button class="back-button" data-home>← الرئيسية</button>
+      <div class="page-heading"><span class="eyebrow">TOOL 04</span><h2>Text Studio</h2><p>إنت اللي بتختار. كل خاصية مقفولة، ومفيش حاجة بتتحط على النص إلا اللي تفعّلها بنفسك.</p></div>
+      <div class="card form-card">
+        <div class="section-title"><span class="number">01</span><h3>الهدف والنص</h3></div>
+        <label for="txtTarget">هتشتغل على إيه؟</label>
+        <select id="txtTarget"><option value="selected">الطبقة النصية النشطة (الستايل بس، النص زي ما هو)</option><option value="new">طبقة نص جديدة</option></select>
+        <div id="txtContentWrap" style="display:none"><label for="txtContent">النص</label><textarea id="txtContent" rows="2" dir="auto" placeholder="اكتب النص هنا..."></textarea></div>
+
+        <div class="section-title field-section"><span class="number">02</span><h3>ستايلك — فعّل اللي محتاجه بس</h3></div>
+        <p class="muted">اضغط على أي خاصية عشان تفعّلها وتظهر إعداداتها. اللي مش متفعّل مش هيتلمس.</p>
+        <div class="opt-list">
+        <div class="opt" data-opt="font"><button class="opt-head" data-toggle="font"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">الخط</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtFont">اختار الخط من خطوط Photoshop</label><div class="font-select-row"><select id="txtFont" dir="auto"><option value="Arial-BoldMT">Arial Bold (افتراضي)</option></select><button id="txtFontRefreshBtn" type="button" class="secondary compact">↻</button></div><p class="hint">اضغط ↻ لتحميل الخطوط الموجودة في Photoshop، وبعدها اختار الخط من القائمة. تقدر تفتح تبويب الخطوط داخل مكتبة ستايلاتك للمعاينة والبحث.</p><button id="openFontLibraryBtn" type="button" class="secondary">فتح الخطوط في مكتبة ستايلاتك</button></div></div>
+        <div class="opt" data-opt="size"><button class="opt-head" data-toggle="size"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">الحجم</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtSize">حجم الخط (بكسل)</label><input id="txtSize" type="number" value="72" min="4" max="1500"></div></div>
+        <div class="opt" data-opt="color"><button class="opt-head" data-toggle="color"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">لون الخط</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtColor">اللون (Hex)</label><div class="color-row"><input id="txtColor" value="#ffffff" dir="ltr" maxlength="7"><span class="swatch" data-for="txtColor"></span></div></div></div>
+        <div class="opt" data-opt="tracking"><button class="opt-head" data-toggle="tracking"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">المسافة بين الحروف</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtTracking">Tracking (من -200 إلى 1000)</label><input id="txtTracking" type="number" value="0" min="-200" max="1000"></div></div>
+        <div class="opt" data-opt="align"><button class="opt-head" data-toggle="align"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">المحاذاة</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtAlign">محاذاة الفقرة</label><select id="txtAlign"><option value="center">في النص</option><option value="left">شمال</option><option value="right">يمين</option></select></div></div>
+        <div class="opt" data-opt="stroke"><button class="opt-head" data-toggle="stroke"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">ستروك (حدود)</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtStrokeSize">سمك الحد (بكسل)</label><input id="txtStrokeSize" type="number" value="6" min="1" max="250"><label for="txtStrokeColor">لون الحد</label><div class="color-row"><input id="txtStrokeColor" value="#3a0f1b" dir="ltr" maxlength="7"><span class="swatch" data-for="txtStrokeColor"></span></div></div></div>
+        <div class="opt" data-opt="shadow"><button class="opt-head" data-toggle="shadow"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">ظل</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtShadowColor">لون الظل</label><div class="color-row"><input id="txtShadowColor" value="#000000" dir="ltr" maxlength="7"><span class="swatch" data-for="txtShadowColor"></span></div><label for="txtShadowOpacity">الشفافية %</label><input id="txtShadowOpacity" type="number" value="75" min="0" max="100"><label for="txtShadowAngle">الزاوية</label><input id="txtShadowAngle" type="number" value="120" min="-180" max="180"><label for="txtShadowDist">المسافة (بكسل)</label><input id="txtShadowDist" type="number" value="8" min="0" max="250"><label for="txtShadowSize">التمويه (بكسل)</label><input id="txtShadowSize" type="number" value="12" min="0" max="250"></div></div>
+        <div class="opt" data-opt="glow"><button class="opt-head" data-toggle="glow"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">توهج خارجي</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtGlowColor">لون التوهج</label><div class="color-row"><input id="txtGlowColor" value="#eadfca" dir="ltr" maxlength="7"><span class="swatch" data-for="txtGlowColor"></span></div><label for="txtGlowOpacity">الشفافية %</label><input id="txtGlowOpacity" type="number" value="75" min="0" max="100"><label for="txtGlowSize">الحجم (بكسل)</label><input id="txtGlowSize" type="number" value="20" min="0" max="250"></div></div>
+        <div class="opt" data-opt="place"><button class="opt-head" data-toggle="place"><span class="s-check"><span class="s-tick">✓</span></span><span class="s-name">التوسيط في التصميم</span><span class="opt-tag">مقفول</span></button><div class="opt-body"><label for="txtPlace">مكان النص</label><select id="txtPlace"><option value="h">في نص التصميم أفقيًا فقط</option><option value="both">في نص التصميم أفقيًا ورأسيًا</option></select></div></div>
+        </div>
+        <div id="txtSummary" class="identity-note">مفيش حاجة متفعّلة — مش هيتغير أي شيء.</div>
+
+        <div class="section-title field-section"><span class="number">03</span><h3>مكتبة ستايلاتك</h3></div>
+        <p class="muted">كل ستايلاتك في مكان واحد: احفظ إعداداتك، اختار خطوط Photoshop، أو استخدم قوالب PSD ثابتة.</p>
+        <div class="style-library-tabs" role="tablist" aria-label="مكتبة ستايلاتك">
+          <button type="button" class="style-library-tab active" data-style-tab="saved" role="tab" aria-selected="true">ستايلاتي المحفوظة</button>
+          <button type="button" class="style-library-tab" data-style-tab="fonts" role="tab" aria-selected="false">الخطوط</button>
+          <button type="button" class="style-library-tab" data-style-tab="templates" role="tab" aria-selected="false">قوالب PSD</button>
+        </div>
+        <div id="savedStylesPanel" class="style-library-panel active" data-style-panel="saved">
+          <p class="muted">احفظ اللي فعّلته باسم، وارجع حمّله وقت ما تحتاجه.</p>
+          <label for="txtStyleName">اسم الستايل</label>
+          <input id="txtStyleName" dir="auto" placeholder="مثال: عنوان ثامبنيل">
+          <button id="txtSaveBtn" class="secondary">حفظ الستايل الحالي</button>
+          <div id="txtStyleList" class="style-list"></div>
+        </div>
+        <div id="fontView" class="style-library-panel" data-style-panel="fonts" hidden>
+          <div class="section-title"><span class="number">01</span><h3>خطوط Photoshop</h3></div>
+          <button id="fontRefreshBtn" class="secondary">↻ تحديث قائمة الخطوط من Photoshop</button><p class="hint">تأكد أن Photoshop مفتوح ثم اضغط تحديث.</p>
+          <label for="fontSearch">بحث باسم الخط أو العائلة</label><input id="fontSearch" placeholder="مثال: Cairo, Arial, Adobe..." dir="auto">
+          <div id="fontCount" class="identity-note">اضغط تحديث لقراءة الخطوط من Photoshop.</div>
+          <div id="fontList" class="font-list"><div class="style-empty">قائمة الخطوط لم تُحمّل بعد.</div></div>
+          <label for="fontPreviewText">نص المعاينة</label><input id="fontPreviewText" value="نسق — NASAQ Studio" dir="auto">
+          <div id="fontPreview" class="font-preview">نسق — NASAQ Studio</div>
+          <label for="fontPostScript">اسم الخط داخل Photoshop</label><input id="fontPostScript" dir="ltr" readonly placeholder="اختار خط من القائمة">
+          <button id="fontApplyBtn" class="primary"><span class="fill"></span><span class="label">✦ تطبيق الخط على طبقة النص المحددة</span></button>
+          <p class="hint">لازم يكون Photoshop مفتوحًا وفيه مستند، وتكون محدد طبقة نص. التطبيق يغيّر الخط فقط ويحافظ على بقية إعدادات الطبقة.</p>
+        </div>
+        <div id="templateView" class="style-library-panel" data-style-panel="templates" hidden>
+          <div class="section-title"><span class="number">01</span><h3>مكتبة قوالب PSD</h3></div>
+          <p class="identity-note">استورد ملفات PSD لتظهر هنا في مكتبة NASAQ Studio. ملفاتك الأصلية تظل كما هي.</p>
+          <button id="templateImportBtn" class="primary"><span class="fill"></span><span class="label">＋ استيراد ملفات PSD</span></button>
+          <button id="templateRefreshBtn" class="secondary">↻ تحديث المكتبة</button>
+          <div id="templateList" class="template-list"><div class="style-empty">لسه مفيش قوالب. استورد ملف PSD للبدء.</div></div>
+          <div class="section-title field-section"><span class="number">02</span><h3>تعديل النصوص</h3></div>
+          <p id="templateDocument" class="identity-note">افتح قالبًا من المكتبة أو جهّز مستند Photoshop مفتوحًا، ثم اقرأ طبقات النص.</p>
+          <button id="templateReadBtn" class="secondary">قراءة طبقات النص من المستند المفتوح</button>
+          <div id="templateLayers" class="template-layers"><div class="style-empty">هتظهر هنا طبقات النص القابلة للتعديل.</div></div>
+          <button id="templateApplyBtn" class="primary"><span class="fill"></span><span class="label">✦ تطبيق النصوص فقط</span></button>
+          <p class="hint">التعديل يطال طبقات النص التي تغيّرها فقط. الخلفيات والصور والأشكال والتأثيرات لا تتغير. يُفضّل حفظ نسخة من ملف PSD قبل التعديل.</p>
+        </div>
+
+        <button id="txtApplyBtn" class="primary"><span class="fill"></span><span class="label">✦ تطبيق على التصميم</span></button>
+      </div>
+    </section>
+  </main>
+  <footer>NASAQ <span>•</span> MADE FOR CREATIVE WORKFLOWS</footer>
+  <div id="status" role="status" aria-live="polite">جاهز — اختار أداة للبدء.</div>
+</body>
+</html>
