@@ -633,10 +633,12 @@ function setAuthGate(locked, message) {
 }
 function setAuthMode(mode){ nasaqAuthMode=mode==='register'?'register':'login'; document.querySelectorAll('[data-auth-mode]').forEach(b=>b.classList.toggle('active',b.dataset.authMode===nasaqAuthMode)); $('authNameWrap').hidden=nasaqAuthMode!=='register'; $('authName').required=nasaqAuthMode==='register'; $('authPassword').autocomplete=nasaqAuthMode==='register'?'new-password':'current-password'; $('authSubmit').querySelector('.label').textContent=nasaqAuthMode==='register'?'إرسال طلب إنشاء الحساب':'تسجيل الدخول'; authMessage(nasaqAuthMode==='register'?'بعد التسجيل، الإدارة لازم توافق على الحساب وتفعّل الترخيص.':'سجّل الدخول بحساب فعّله مسؤول NASAQ.'); }
 async function refreshAuthGate(){
-  if(!nasaqAuthVerified) setAuthGate(true,'جارٍ التحقق من الحساب والترخيص…');
+  if(!nasaqAuthVerified && $('payGate').hidden) setAuthGate(true,'جارٍ التحقق من الحساب والترخيص…');
   if(!window.nasaq?.authStatus){nasaqAuthVerified=false;setAuthGate(true,'نسخة البرنامج لا تحتوي على وحدة التراخيص. حدّث النسخة.');authMessage('نسخة البرنامج لا تحتوي على وحدة التراخيص. حدّث النسخة.','error');return;}
   const r=await window.nasaq.authStatus();
-  if(r&&r.ok&&r.authenticated){nasaqAuthVerified=true;setAuthGate(false);const out=$('accountLogoutBtn');if(out)out.hidden=false;return;}
+  if(r&&r.ok&&r.authenticated){nasaqAuthVerified=true;$('payGate').hidden=true;setAuthGate(false);const out=$('accountLogoutBtn');if(out)out.hidden=false;return;}
+  if(r&&r.stage==='payment'&&r.account){nasaqAuthVerified=false;setAuthGate(true);$('authGate').hidden=true;$('authPassword').value='';showPayGate(r.account);const out=$('accountLogoutBtn');if(out)out.hidden=true;return;}
+  $('payGate').hidden=true;
   nasaqAuthVerified=false;setAuthGate(true,r?.error||'سجّل الدخول للمتابعة.');const out=$('accountLogoutBtn');if(out)out.hidden=true;authMessage(r?.error||'سجّل الدخول للمتابعة.');
 }
 function initAuth(){
@@ -646,7 +648,7 @@ function initAuth(){
     const payload={name:$('authName').value.trim(),email:$('authEmail').value.trim(),password:$('authPassword').value};
     try{
       const r=nasaqAuthMode==='register'?await window.nasaq.authRegister(payload):await window.nasaq.authLogin(payload);
-      if(r?.ok&&nasaqAuthMode==='register'){const success=r.message||'تم استلام طلبك. انتظر موافقة الإدارة ثم سجّل الدخول.';setAuthMode('login');authMessage(success,'success');return;}
+      if(r?.ok&&nasaqAuthMode==='register'){const success='تم إنشاء حسابك ✓ سجّل الدخول دلوقتي وهتفتحلك صفحة اختيار الباقة والدفع.';setAuthMode('login');authMessage(success,'success');return;}
       if(r?.ok&&r.token){await refreshAuthGate();if(!$('authGate').hidden)$('authPassword').value='';return;}
       authMessage(r?.error||r?.message||'تعذر إتمام الطلب.', 'error');
     }catch(err){authMessage('تعذر الاتصال بخادم التراخيص. تأكد من إعداد عنوان الخادم والإنترنت. '+(err.message||''),'error');}
@@ -654,7 +656,104 @@ function initAuth(){
   });
   setAuthMode('login');
   const logout=$('accountLogoutBtn'); if(logout) logout.addEventListener('click',async()=>{await window.nasaq.authLogout();nasaqAuthVerified=false;setAuthGate(true,'تم تسجيل الخروج. سجّل الدخول للمتابعة.');logout.hidden=true;setAuthMode('login');});
+  initPayGate();
   refreshAuthGate();
+}
+
+/* ---------- Payment page: pending / unlicensed accounts pick a plan, pay by Vodafone Cash and upload the receipt ---------- */
+const payState={plan:'',proof:'',plans:[],number:'',busy:false,editing:false};
+const egp=n=>Number(n).toLocaleString('en-US');
+const planPrice=p=>p.kind==='lifetime'?egp(p.price)+' ج.م · مرة واحدة':p.months===1?egp(p.price)+' ج.م / شهر':egp(p.price)+' ج.م / سنة';
+const planSub=p=>p.kind==='lifetime'?'ادفع مرة واحدة واستخدم البرنامج على طول':p.months===1?'تجديد شهري':'12 شهر من الاستخدام';
+function payMsg(text,kind=''){const el=$('payMessage');if(!el)return;el.textContent=text||'';el.className='auth-message'+(kind?' '+kind:'')}
+function renderPlans(){
+  const list=$('planList');list.innerHTML='';
+  const monthly=payState.plans.find(p=>p.id==='monthly'),yearly=payState.plans.find(p=>p.id==='yearly');
+  payState.plans.forEach(p=>{
+    const b=document.createElement('button');b.type='button';b.className='plan-card'+(payState.plan===p.id?' selected':'');b.dataset.plan=p.id;
+    const save=(p.id==='yearly'&&monthly)?monthly.price*12-yearly.price:0;
+    const left=document.createElement('span');left.className='plan-copy';
+    const title=document.createElement('b');title.textContent='الباقة '+p.label;left.appendChild(title);
+    const sub=document.createElement('small');sub.textContent=planSub(p)+(save>0?' · وفّر '+egp(save)+' ج.م مقارنة بالشهري':'');left.appendChild(sub);
+    const price=document.createElement('span');price.className='price';price.textContent=planPrice(p);
+    b.appendChild(left);b.appendChild(price);
+    b.addEventListener('click',()=>{payState.plan=p.id;renderPlans();updatePayHint();});
+    list.appendChild(b);
+  });
+}
+function updatePayHint(){
+  const p=payState.plans.find(x=>x.id===payState.plan);
+  $('payAmountHint').textContent=p?'المبلغ المطلوب: '+egp(p.price)+' ج.م ('+'الباقة '+p.label+')':'اختار باقة عشان يظهر المبلغ المطلوب.';
+}
+function showPayGate(acc){
+  const gate=$('payGate');const first=gate.hidden;gate.hidden=false;
+  $('payWho').textContent='أهلًا '+(acc.user?.name||'')+' — '+(acc.user?.email||'');
+  payState.number=(acc.payment&&acc.payment.number)||'';
+  if(first||JSON.stringify(acc.plans)!==JSON.stringify(payState.plans)){payState.plans=acc.plans||[];renderPlans();updatePayHint();}
+  $('payNumber').textContent=payState.number||'لسه متضبطش — كلمنا على فيسبوك';
+  $('payCopyBtn').disabled=!payState.number;
+  const req=acc.request,box=$('payStatusBox'),flow=$('payFlow');
+  box.hidden=true;box.className='pay-status';
+  if(req&&req.status==='pending'&&!payState.editing){
+    const pl=payState.plans.find(x=>x.id===req.plan);
+    box.hidden=false;box.className='pay-status wait';
+    box.innerHTML='';const t=document.createElement('b');t.textContent='✓ استلمنا إيصال الدفع';box.appendChild(t);
+    const d=document.createElement('span');d.textContent='باقة '+(pl?pl.label:req.plan)+' — '+egp(req.amount)+' ج.م. الطلب قيد المراجعة، وأول ما نتأكد من التحويل بنفعّل حسابك والبرنامج هيفتح لوحده (سيب النافذة مفتوحة أو افتحها بعد شوية).';box.appendChild(d);
+    const again=document.createElement('button');again.type='button';again.className='pay-link';again.textContent='رفعت صورة غلط؟ ابعت إيصال جديد';again.addEventListener('click',()=>{payState.editing=true;showPayGate(acc)});box.appendChild(again);
+    flow.hidden=true;
+  }else{
+    flow.hidden=false;
+    if(req&&req.status==='rejected'){box.hidden=false;box.className='pay-status bad';box.textContent='الإيصال السابق اترفض'+(req.adminNote?': '+req.adminNote:'')+'. ارفع إيصال جديد من فضلك.';}
+    else if(acc.user&&acc.user.status==='pending'){box.hidden=false;box.className='pay-status';box.textContent='حسابك اتسجّل ✓ كمّل الدفع عشان يتفعّل.';}
+  }
+  $('paySubmit').disabled=payState.busy;
+}
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{
+      try{
+        const max=2000,k=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+        const w=Math.max(1,Math.round(img.naturalWidth*k)),h=Math.max(1,Math.round(img.naturalHeight*k));
+        const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);
+        let q=.88,out=c.toDataURL('image/jpeg',q);while(out.length>2.4e6&&q>.4){q-=.1;out=c.toDataURL('image/jpeg',q);}
+        URL.revokeObjectURL(url);resolve(out);
+      }catch(e){URL.revokeObjectURL(url);reject(e)}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('تعذر قراءة الصورة. جرّب صورة تانية.'))};
+    img.src=url;
+  });
+}
+async function submitPayment(){
+  if(payState.busy)return;
+  if(!payState.plan)return payMsg('اختار الباقة الأول.','error');
+  if(!payState.number)return payMsg('رقم الدفع لسه متضبطش. كلمنا على فيسبوك.','error');
+  if(!payState.proof)return payMsg('ارفع صورة سكرين التحويل.','error');
+  payState.busy=true;$('paySubmit').disabled=true;payMsg('جارٍ إرسال الإيصال…');
+  try{
+    const r=await window.nasaq.submitPayment({plan:payState.plan,proof:payState.proof,senderPhone:$('payPhone').value.trim()});
+    if(r&&r.ok){payState.proof='';payState.editing=false;$('payPreview').hidden=true;$('payPreview').removeAttribute('src');$('payDropText').textContent='اضغط هنا واختار صورة السكرين';$('payDrop').classList.remove('has-file');payMsg(r.message||'تم الإرسال.','success');payState.busy=false;await refreshAuthGate();return;}
+    payMsg((r&&r.error)||'تعذر إرسال الإيصال. حاول تاني.','error');
+  }catch(e){payMsg('تعذر الاتصال بالخادم. '+(e.message||''),'error');}
+  payState.busy=false;$('paySubmit').disabled=false;
+}
+function initPayGate(){
+  const file=$('payFile');
+  file.addEventListener('change',async()=>{
+    const f=file.files&&file.files[0];if(!f)return;
+    if(!/^image\//.test(f.type)){payMsg('اختار ملف صورة (PNG أو JPG).','error');file.value='';return;}
+    try{
+      payMsg('جارٍ تجهيز الصورة…');payState.proof=await compressImage(f);
+      const pv=$('payPreview');pv.src=payState.proof;pv.hidden=false;$('payDropText').textContent='✓ '+f.name+' — اضغط لتغيير الصورة';$('payDrop').classList.add('has-file');payMsg('');
+    }catch(e){payState.proof='';payMsg(e.message||'تعذر قراءة الصورة.','error');}
+    file.value='';
+  });
+  $('paySubmit').addEventListener('click',submitPayment);
+  $('payCopyBtn').addEventListener('click',async()=>{if(!payState.number)return;try{await window.nasaq.copy(payState.number);payMsg('تم نسخ الرقم ✓','success');}catch(_){}});
+  $('payRefreshBtn').addEventListener('click',async()=>{payMsg('جارٍ التحديث…');await refreshAuthGate();if(!$('payGate').hidden)payMsg('الحالة محدّثة.');});
+  $('payLogoutBtn').addEventListener('click',async()=>{await window.nasaq.authLogout();nasaqAuthVerified=false;payState.plan='';payState.proof='';payState.editing=false;$('payGate').hidden=true;setAuthGate(true);setAuthMode('login');authMessage('تم تسجيل الخروج. سجّل الدخول للمتابعة.');});
+  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[data-ext]');if(!a)return;e.preventDefault();if(window.nasaq&&window.nasaq.openExternal)window.nasaq.openExternal(a.href);});
+  window.setInterval(()=>{if(!$('payGate').hidden&&!payState.busy)refreshAuthGate();},12000);
 }
 
 function init() {

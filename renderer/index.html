@@ -25,7 +25,35 @@
         <button id="authSubmit" class="primary auth-submit" type="submit"><span class="fill"></span><span class="label">تسجيل الدخول</span></button>
       </form>
       <p id="authMessage" class="auth-message" role="status" aria-live="polite">الاتصال بخادم التراخيص مطلوب لاستخدام البرنامج.</p>
-      <p class="auth-foot">اتصال آمن · جهاز واحد لكل ترخيص · مراجعة يدوية للحسابات</p>
+      <p class="auth-foot">اتصال آمن · جهاز واحد لكل ترخيص · مراجعة يدوية للحسابات<br><a class="ext-link" data-ext href="https://www.facebook.com/AbdallahSayed09/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V14h2.7v8h3.1z"/></svg> تطوير: Abdallah Sayed</a></p>
+    </div>
+  </section>
+  <section id="payGate" class="auth-gate" hidden aria-modal="true" role="dialog" aria-labelledby="payTitle">
+    <div class="auth-card pay-card" dir="rtl">
+      <div class="pay-top"><div class="auth-mark">نَ</div><button id="payLogoutBtn" class="pay-logout" type="button">تسجيل الخروج</button></div>
+      <div class="eyebrow">NASAQ STUDIO+ · ACTIVATION</div>
+      <h2 id="payTitle">فعّل حسابك</h2>
+      <p id="payWho" class="auth-lead"></p>
+      <div id="payStatusBox" class="pay-status" hidden></div>
+      <div id="payFlow">
+        <div class="pay-step"><span>1</span>اختار الباقة</div>
+        <div id="planList" class="plan-list"></div>
+        <div class="pay-step"><span>2</span>حوّل المبلغ على فودافون كاش</div>
+        <div class="pay-number-box">
+          <small>رقم فودافون كاش</small>
+          <strong id="payNumber" dir="ltr">—</strong>
+          <em id="payAmountHint">اختار باقة عشان يظهر المبلغ المطلوب.</em>
+          <button id="payCopyBtn" class="secondary" type="button">نسخ الرقم</button>
+        </div>
+        <div class="pay-step"><span>3</span>ارفع صورة سكرين التحويل</div>
+        <label class="pay-drop" for="payFile" id="payDrop"><input id="payFile" type="file" accept="image/png,image/jpeg,image/webp" hidden><span id="payDropText">اضغط هنا واختار صورة السكرين</span><img id="payPreview" alt="" hidden></label>
+        <label for="payPhone">رقم المحفظة اللي حوّلت منها (اختياري)</label>
+        <input id="payPhone" type="tel" inputmode="tel" dir="ltr" maxlength="20" placeholder="01xxxxxxxxx" autocomplete="off">
+        <button id="paySubmit" class="primary auth-submit" type="button"><span class="fill"></span><span class="label">إرسال للمراجعة</span></button>
+      </div>
+      <p id="payMessage" class="auth-message" role="status" aria-live="polite"></p>
+      <button id="payRefreshBtn" class="pay-link" type="button">↻ تحديث حالة الطلب</button>
+      <p class="auth-foot">محتاج مساعدة؟ <a class="ext-link" data-ext href="https://www.facebook.com/AbdallahSayed09/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V14h2.7v8h3.1z"/></svg> تواصل معنا على فيسبوك</a></p>
     </div>
   </section>
   <header>
@@ -51,6 +79,7 @@
         <span class="bar"></span><span class="wash"></span><span class="tool-icon">Aa</span><span class="tool-copy"><b>04 / Text Studio</b><small>اكتب بالستايل اللي إنت تختاره بس — مفيش حاجة بتتطبق إلا اللي تفعّلها بنفسك.</small><em>فتح الأداة <span>↗</span></em></span><span class="card-arrow">›</span>
       </button>
       <div class="home-note"><span class="note-dot"></span> قوالبك وخطوطك — داخل NASAQ Studio وبنفس هوية نسق.</div>
+      <a class="dev-card ext-link" data-ext href="https://www.facebook.com/AbdallahSayed09/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V14h2.7v8h3.1z"/></svg><span><b>Abdallah Sayed</b><small>مطوّر NASAQ Studio+ · تابعنا على فيسبوك</small></span><em>↗</em></a>
     </section>
 
     <section id="designPromptView" class="view">

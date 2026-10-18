@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld('nasaq', {
   authLogin: (payload) => ipcRenderer.invoke('auth:login', payload),
   authStatus: () => ipcRenderer.invoke('auth:status'),
   authLogout: () => ipcRenderer.invoke('auth:logout'),
+  submitPayment: (payload) => ipcRenderer.invoke('account:submitPayment', payload),
+  openExternal: (url) => ipcRenderer.invoke('open:external', url),
   copy: (text) => ipcRenderer.invoke('copy', text),
   setOnTop: (on) => ipcRenderer.invoke('ontop', on),
   assetsDir: () => ipcRenderer.invoke('assetsDir'),

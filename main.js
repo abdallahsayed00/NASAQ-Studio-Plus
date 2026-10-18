@@ -1,5 +1,5 @@
 'use strict';
-const { app, BrowserWindow, ipcMain, clipboard, Menu, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, clipboard, Menu, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const bridge = require('./psbridge');
@@ -15,7 +15,8 @@ function apiBase() {
   if (env) return env.replace(/\/$/, '');
   const cfg = path.join(authDir(), 'license-config.json');
   try { const value = JSON.parse(fs.readFileSync(cfg, 'utf8')).apiUrl; if (value) return String(value).replace(/\/$/, ''); } catch (_) {}
-  return 'https://nasaq-studio-plus.vercel.app';}
+  return 'https://nasaq-studio-plus.vercel.app';;
+}
 function getDeviceId() {
   try { const existing = fs.readFileSync(deviceFile(), 'utf8').trim(); if (/^[a-f0-9-]{36}$/i.test(existing)) return existing; } catch (_) {}
   const id = crypto.randomUUID(); fs.mkdirSync(authDir(), {recursive:true}); fs.writeFileSync(deviceFile(), id, {mode:0o600}); return id;
@@ -28,13 +29,13 @@ function saveSession(token) {
   fs.writeFileSync(authFile(), safeStorage.encryptString(String(token)), {mode:0o600});
 }
 function clearSession() { try { fs.unlinkSync(authFile()); } catch (_) {} }
-async function apiRequest(route, body, token) {
+async function apiRequest(route, body, token, timeoutMs = 12000) {
   const base = apiBase();
   const parsed = new URL(base);
   if (parsed.protocol !== 'https:' && !['localhost','127.0.0.1','::1'].includes(parsed.hostname)) throw new Error('خادم التراخيص العام يجب أن يستخدم HTTPS.');
-  const response = await fetch(base + route, { method: body === undefined ? 'GET' : 'POST', headers: { 'content-type':'application/json', ...(token ? {authorization:'Bearer '+token} : {}) }, ...(body === undefined ? {} : {body:JSON.stringify(body)}), signal: AbortSignal.timeout(12000) });
+  const response = await fetch(base + route, { method: body === undefined ? 'GET' : 'POST', headers: { 'content-type':'application/json', ...(token ? {authorization:'Bearer '+token} : {}) }, ...(body === undefined ? {} : {body:JSON.stringify(body)}), signal: AbortSignal.timeout(timeoutMs) });
   let payload = {}; try { payload = await response.json(); } catch (_) {}
-  if (!response.ok) { const err = new Error(payload.error || payload.message || `HTTP ${response.status}`); err.code = response.status; throw err; }
+  if (!response.ok) { const err = new Error(payload.error || payload.message || (response.status === 413 ? 'الصورة كبيرة قوي. اختار صورة أصغر.' : response.status === 429 ? 'محاولات كتير. جرّب بعد شوية.' : `HTTP ${response.status}`)); err.code = response.status; throw err; }
   return payload;
 }
 
@@ -55,6 +56,7 @@ function createWindow() {
   });
   Menu.setApplicationMenu(null);
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.on('closed', () => { win = null; });
   if (process.env.NASAQ_SMOKE) {   // used by the automated smoke test only
     win.webContents.on('did-finish-load', async () => {
@@ -85,9 +87,25 @@ else {
     ipcMain.handle('auth:status', async () => {
       const token = readSession(); if (!token) return {ok:false,authenticated:false,error:'سجّل الدخول للمتابعة.'};
       try { const result = await apiRequest('/api/plugin/me', undefined, token); return {...result,authenticated:true}; }
-      catch (e) { if (e.code === 401 || e.code === 403) clearSession(); return {ok:false,authenticated:false,error:e.message}; }
+      catch (e) {
+        if (e.code === 403) {   // not licensed yet → is the account waiting for payment / approval? then keep the session and show the payment page
+          try { const acc = await apiRequest('/api/account/status', undefined, token); if (acc && acc.stage === 'payment') return {ok:false,authenticated:false,stage:'payment',account:acc}; } catch (_) {}
+        }
+        if (e.code === 401 || e.code === 403) clearSession();
+        return {ok:false,authenticated:false,error:e.message};
+      }
     });
     ipcMain.handle('auth:logout', () => { clearSession(); return {ok:true}; });
+    ipcMain.handle('account:submitPayment', async (_e, p) => {
+      const token = readSession(); if (!token) return {ok:false,error:'سجّل الدخول للمتابعة.'};
+      try { return await apiRequest('/api/account/payment', {plan:String((p&&p.plan)||''),proof:String((p&&p.proof)||''),senderPhone:String((p&&p.senderPhone)||'')}, token, 60000); }
+      catch (e) { if (e.code === 401) clearSession(); return {ok:false,error:e.message,code:e.code||0}; }
+    });
+    ipcMain.handle('open:external', (_e, url) => {   // only the developer's Facebook page can be opened from the app
+      const allowed = ['https://www.facebook.com/AbdallahSayed09/'];
+      if (!allowed.includes(String(url))) return false;
+      shell.openExternal(String(url)); return true;
+    });
     ipcMain.handle('copy', (_e, text) => { clipboard.writeText(String(text)); return true; });
     ipcMain.handle('ontop', (_e, on) => { if (win) win.setAlwaysOnTop(!!on, 'floating'); return !!on; });
     ipcMain.handle('assetsDir', () => path.join(__dirname, 'renderer', 'assets').replace(/\\/g, '/'));
