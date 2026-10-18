@@ -15,8 +15,7 @@ function apiBase() {
   if (env) return env.replace(/\/$/, '');
   const cfg = path.join(authDir(), 'license-config.json');
   try { const value = JSON.parse(fs.readFileSync(cfg, 'utf8')).apiUrl; if (value) return String(value).replace(/\/$/, ''); } catch (_) {}
-  return 'http://127.0.0.1:8787';
-}
+  return 'https://nasaq-studio-plus.vercel.app';}
 function getDeviceId() {
   try { const existing = fs.readFileSync(deviceFile(), 'utf8').trim(); if (/^[a-f0-9-]{36}$/i.test(existing)) return existing; } catch (_) {}
   const id = crypto.randomUUID(); fs.mkdirSync(authDir(), {recursive:true}); fs.writeFileSync(deviceFile(), id, {mode:0o600}); return id;
