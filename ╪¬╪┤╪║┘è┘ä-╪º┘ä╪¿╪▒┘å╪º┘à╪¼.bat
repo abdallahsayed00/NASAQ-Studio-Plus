@@ -1,8 +1,0 @@
-@echo off
-chcp 65001 >nul
-cd /d "%~dp0"
-if not exist node_modules (
-  echo Installing dependencies for the first time...
-  call npm install
-)
-call npm start
